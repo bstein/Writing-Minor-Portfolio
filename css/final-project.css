@@ -1,0 +1,29 @@
+html, body {
+  background-color: #22252C;
+  margin: 0;
+  /* Disable scrolling */
+  height: 100%;
+  overflow: hidden;
+}
+
+p {
+  color: white;
+  text-align: center;
+  font-family: 'Courier';
+}
+
+/* TODO - disable text selection */
+
+#parentContainer {
+  /* center everything within the parent container */
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.largeFont {
+  font-size: 3em;
+  max-width: 960px;
+  margin: 0 14px 0 14px;
+}
