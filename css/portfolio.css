@@ -103,6 +103,10 @@ section h2 {
   line-height: 3.1rem;
 }
 
+#img-profile {
+  border-radius: 50%;
+}
+
 #mainNav {
   padding-top: 1rem;
   padding-bottom: 1rem;
