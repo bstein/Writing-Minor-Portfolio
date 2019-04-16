@@ -2,11 +2,29 @@ let STATE = 0; // 0: start, odd: question, even: storyline, -1: game over
 let START_TEXT = "goal: answer as many questions correctly as you can";
 
 let LOADING_RATE = 1000;
-let CRITICAL_STORY_LINES = 1;
+let CRITICAL_STORY_LINES = 4;
 
-const FULL_STORY_BANK = [ "i decide what’s correct\nwith predictable, pseudorandom math\n\nyou don’t have control\nbut neither do i", "2" ];
-const FULL_QUESTION_BANK = [ "Which color is better?", "Shall we continue?", "Do you understand?" ];
-const FULL_OPTION_BANK = [ ["Maize", "Blue"], ["Sure", "OK", "Yes"], ["No"], ];
+const FULL_STORY_BANK = [ "i decide what choice is correct<br><br>you'll have good chances<br>until I gradually make this harder",
+                          "pseudorandom looks like random<br><br>but it's based off of something else<br>like the current time or weather",
+                          "your chances here are pseudorandom<br>as a computer cannot do better",
+                          "what if the same model applies<br>to real life?<br><br>i hope you're ready",
+                          "non-critical 1",
+                          "non-critical 2",
+                          "non-critical 3"];
+const FULL_QUESTION_BANK = ["Which color is better?",
+                            "Shall we continue?",
+                            "Do you understand?",
+                            "Which 1 do you like?",
+                            "Are you enjoing this?",
+                            "Sample Question? 2",
+                            "Sample Question? 3"];
+const FULL_OPTION_BANK = [["Maize", "Blue"],
+                          ["Sure", "OK", "Yes"],
+                          ["No"],
+                          ["1","1"],
+                          ["Maybe"],
+                          ["A 1","A 2","A 3"],
+                          ["A 1"]];
 
 let STORY_BANK = [];
 let QUESTION_BANK = [];
@@ -71,18 +89,14 @@ function showQuestion() {
 }
 
 function showStory() {
-  let storyIndexRange = STORY_BANK.length;
-  if (STORY_BANK.length > FULL_STORY_BANK.length - CRITICAL_STORY_LINES) {
-    storyIndexRange = (FULL_STORY_BANK.length - CRITICAL_STORY_LINES) - 1;
-  }
+  // Use the next story line
+  let sIndex = 0;
 
-  // Pick a story line randomly
-  let sIndex = Math.floor(Math.random() * storyIndexRange);
   $("#story").html(STORY_BANK[sIndex]);
-  $("#loading").html("....");
+  $("#loading").html(getLoadingText(STORY_BANK[sIndex]));
 
   // Remove story line
-  STORY_BANK.splice(sIndex, 1);
+  STORY_BANK.shift();
 
   // Switch from question to story view
   $("#questionContainer").hide();
@@ -91,4 +105,9 @@ function showStory() {
 
   // Begin loading...
   setTimeout(removeLoadingDot, LOADING_RATE);
+}
+
+function getLoadingText(story) {
+  let wordCount = story.trim().split(/\s+/).length;
+  return ".".repeat(Math.ceil(wordCount / 2.5));
 }
