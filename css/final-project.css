@@ -10,9 +10,8 @@ p, button {
   color: white;
   text-align: center;
   font-family: 'Courier';
+  user-select: none;
 }
-
-/* TODO - disable text selection */
 
 #parentContainer {
   /* center everything within the parent container */
