@@ -1,8 +1,7 @@
-let STATE = 0; // 0: start, odd: question, even: storyline, -1: game over
-let START_TEXT = "goal: answer as many questions correctly as you can";
+const LOADING_RATE = 1000;
+const CRITICAL_STORY_LINES = 4;
 
-let LOADING_RATE = 1000;
-let CRITICAL_STORY_LINES = 4;
+const START_TEXT = "goal: answer as many questions correctly as you can";
 
 const FULL_STORY_BANK = [ "i decide what choice is correct<br><br>you'll have good chances<br>at least at first",
                           "pseudorandom looks like random<br><br>but it's based off of something else<br>like the current time or weather",
@@ -19,6 +18,7 @@ const FULL_STORY_BANK = [ "i decide what choice is correct<br><br>you'll have go
                           "you can stop at any time",
                           "when does nature stop being random?<br><br>when could it be predicted?<br>(hypothetically)",
                           "avoid nihilism,<br>if possible"];
+
 const FULL_QUESTION_BANK = ["Which color is better?",
                             "Shall we continue?",
                             "Do you understand?",
@@ -34,6 +34,7 @@ const FULL_QUESTION_BANK = ["Which color is better?",
                             "Are you feeling young or old?",
                             "Which letter do you prefer?",
                             "Has the sun set?"];
+
 const FULL_OPTION_BANK = [["Maize", "Blue"],
                           ["Sure", "OK", "Yes"],
                           ["No"],
@@ -50,27 +51,26 @@ const FULL_OPTION_BANK = [["Maize", "Blue"],
                           ["A", "N", "Q"],
                           ["No", "Not sure", "Yes"]];
 
+const FULL_CHANCES = [ 1.00, 0.90, 0.70, 0.60, 0.40, 0.30, 0.20, 0.10, 0.05, 0.00 ];
+
 let STORY_BANK = [];
 let QUESTION_BANK = [];
 let OPTION_BANK = [];
+let CHANCES = [];
 
 $(document).ready(() => {
   // Copy bank lists since this is the first load
-  STORY_BANK = FULL_STORY_BANK;
-  QUESTION_BANK = FULL_QUESTION_BANK;
-  OPTION_BANK = FULL_OPTION_BANK;
+  STORY_BANK = FULL_STORY_BANK.slice();
+  QUESTION_BANK = FULL_QUESTION_BANK.slice();
+  OPTION_BANK = FULL_OPTION_BANK.slice();
+  CHANCES = FULL_CHANCES.slice();
 
   // Begin loading...
   setTimeout(removeLoadingDot, LOADING_RATE);
 
   // Listen for option click events
-  $(".option").click(optionClicked);
+  $(".option").click(showStory);
 });
-
-function optionClicked() {
-  STATE += 1;
-  showStory();
-}
 
 function removeLoadingDot() {
   currentProgress = $("#loading").html();
@@ -83,7 +83,6 @@ function removeLoadingDot() {
     setTimeout(removeLoadingDot, LOADING_RATE);
   }
   else {
-    STATE += 1;
     showQuestion();
   }
 }
@@ -105,7 +104,7 @@ function showQuestion() {
   OPTION_BANK.splice(qIndex, 1);
 
   // Listen for option click events
-  $(".option").click(optionClicked);
+  $(".option").click(showStory);
 
   // Switch from story to question view
   $("#storyContainer").hide();
@@ -118,6 +117,26 @@ function showStory() {
 
   // If the critical story lines have already been displayed, pick a line randomly instead
   if (STORY_BANK.length <= FULL_STORY_BANK.length - CRITICAL_STORY_LINES) {
+    // Decide if game over
+    if (Math.random() > CHANCES[0]) {
+      // Reset arrays (without critical story)
+      STORY_BANK = FULL_STORY_BANK.slice(CRITICAL_STORY_LINES);
+      QUESTION_BANK = FULL_QUESTION_BANK.slice();
+      OPTION_BANK = FULL_OPTION_BANK.slice();
+      CHANCES = FULL_CHANCES.slice();
+
+      // Replace question with game over message
+      $("#question").html("game over! :(");
+      $(".option").remove();
+      setTimeout(function() {
+        $("#optionContainer").append(`<button class='option'>TRY AGAIN</button>`);
+        $(".option").click(showStory);
+      }, 800);
+
+      return;
+    }
+
+    CHANCES.shift();
     sIndex = Math.floor(Math.random() * STORY_BANK.length);
   }
 
@@ -138,5 +157,5 @@ function showStory() {
 
 function getLoadingText(story) {
   let wordCount = story.trim().split(/\s+/).length;
-  return ".".repeat(Math.ceil(wordCount / 2.5));
+  return ".".repeat(Math.ceil(wordCount / 4) + 1);
 }
