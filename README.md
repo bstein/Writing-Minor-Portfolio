@@ -4,6 +4,6 @@ This is an EPortfolio to showcase my coursework for the [Sweetland Minor in Writ
 
 ## Preview
 
-[![Freelancer Preview](https://startbootstrap.com/assets/img/screenshots/themes/freelancer.png)](https://blackrockdigital.github.io/startbootstrap-freelancer/)
+[![EPortfilio Preview](https://writing.baileystein.com/img/portfolio/eportfolio-screenshot.jpg)](https://writing.baileystein.com/)
 
-**[View Live Preview](https://blackrockdigital.github.io/startbootstrap-freelancer/)**
+**[View Live Preview](https://writing.baileystein.com/)**
